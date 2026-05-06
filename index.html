@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edge &amp; Gateway AuthZ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+<style>
+  :root { --amber:#f5a623; --green:#4ecb8d; --purple:#a78bfa; --blue:#60a5fa; --red:#f87171;
+          --bg:#0a0a0f; --bg2:#10101a; --bg3:#181824; --border:#2a2a3a; --text:#e8e8f0; --muted:#8888a8; }
+  .reveal-viewport { background: var(--bg); }
+  .reveal .slides section { background: transparent; }
+  .reveal { font-family: 'DM Sans', sans-serif; color: var(--text); }
+  .reveal h1, .reveal h2, .reveal h3 { font-family: 'Playfair Display', serif; font-weight: 700; }
+  .reveal h1 { font-size: 1.6em; color: var(--amber); line-height: 1.1; }
+  .reveal h2 { font-size: 1.1em; color: var(--amber); margin-bottom: .2em; }
+  .reveal h3 { font-size: .78em; color: var(--green); margin-bottom: .15em; }
+  .reveal p  { font-size: .56em; line-height: 1.45; color: var(--text); }
+  .reveal li { font-size: .54em; line-height: 1.45; margin-bottom: .1em; }
+  .reveal code { font-family: 'JetBrains Mono', monospace; font-size: .72em; }
+  .reveal pre  { box-shadow: none; background: var(--bg3); border: 1px solid var(--border);
+                 border-radius: 6px; padding: .3em .5em; margin: .25em 0; }
+  .reveal pre code { font-size: .52em; line-height: 1.35; background: transparent; color: #cdd6f4; }
+  .slide-hdr { display:flex; align-items:center; gap:.4em; border-bottom:1px solid var(--border);
+               padding-bottom:.2em; margin-bottom:.3em; }
+  .slide-hdr .tag { font-family:'JetBrains Mono',monospace; font-size:.42em; font-weight:500;
+                    color:var(--bg); background:var(--amber); padding:.1em .4em; border-radius:3px; letter-spacing:.04em; }
+  .slide-hdr h2 { margin:0; font-size:.95em; }
+  .cols { display:grid; gap:.5em; }
+  .cols-2 { grid-template-columns:1fr 1fr; }
+  .cols-3 { grid-template-columns:1fr 1fr 1fr; }
+  .cols-6040 { grid-template-columns:6fr 4fr; }
+  .cols-4060 { grid-template-columns:4fr 6fr; }
+  .card { background:var(--bg2); border:1px solid var(--border); border-radius:6px; padding:.35em .6em; }
+  .card.amber { border-left:3px solid var(--amber); }
+  .card.green { border-left:3px solid var(--green); }
+  .card.purple{ border-left:3px solid var(--purple); }
+  .card.blue  { border-left:3px solid var(--blue); }
+  .card.red   { border-left:3px solid var(--red); }
+  .card h3 { font-size:.64em; margin:0 0 .12em; }
+  .card p  { font-size:.52em; margin:0; color:#b8b8d0; }
+  .card ul { margin:0; padding-left:1em; }
+  .card li { font-size:.52em; color:#b8b8d0; margin-bottom:.02em; }
+  .reveal table { width:100%; border-collapse:collapse; font-size:.5em; }
+  .reveal table th { background:var(--bg3); color:var(--amber); font-weight:600; padding:.2em .4em; border:1px solid var(--border); text-align:left; }
+  .reveal table td { padding:.18em .4em; border:1px solid var(--border); color:#ccc; }
+  .reveal table tr:nth-child(even) td { background:#0e0e18; }
+  .a{color:var(--amber);font-weight:600;} .g{color:var(--green);font-weight:600;}
+  .p{color:var(--purple);font-weight:600;} .b{color:var(--blue);font-weight:600;}
+  .r{color:var(--red);font-weight:600;} .mono{font-family:'JetBrains Mono',monospace;}
+  svg.diagram { display:block; margin:0 auto; overflow:visible; }
+  .pill { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:.44em; padding:.08em .4em; border-radius:99px; border:1px solid; margin:0 .08em; }
+  .pill.amber{color:var(--amber); border-color:var(--amber);} .pill.green{color:var(--green); border-color:var(--green);}
+  .pill.purple{color:var(--purple); border-color:var(--purple);} .pill.blue{color:var(--blue); border-color:var(--blue);}
+  .reveal .slide-footer{display:none;}
+  .title-slide h1{font-size:1.8em;}
+  .title-slide .subtitle{font-size:.7em; color:var(--green); font-family:'DM Sans',sans-serif; font-weight:300; letter-spacing:.04em; margin:.3em 0 .6em;}
+  .title-slide .meta{font-size:.48em; color:var(--muted); font-family:'JetBrains Mono',monospace;}
+  .ss-row{display:flex; gap:.25em; align-items:center; margin:.1em 0; font-size:.55em; font-family:'JetBrains Mono',monospace;}
+  .ss-node{padding:.2em .55em; border-radius:5px; font-size:.9em; background:var(--bg3); border:1px solid var(--border); color:var(--text);}
+  .ss-node.active{background:#1a2a1a; border-color:var(--green); color:var(--green);}
+  .ss-node.done{background:#1a1a2a; border-color:var(--purple); color:var(--purple);}
+  .ss-arrow{color:var(--amber);}
+  .reveal ul, .reveal ol { margin:.15em 0 .15em 1em; }
+  .reveal .slides > section { display:flex !important; flex-direction:column !important; overflow-y:auto !important; align-items:stretch !important; justify-content:flex-start !important; }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+
+<!-- ═══ SLIDE 01 — TITLE ═══ -->
+<section class="title-slide" data-background-color="#0a0a0f">
+  <div style="text-align:left; max-width:820px; margin:0 auto; padding:1em 0;">
+    <div style="font-family:'JetBrains Mono',monospace; font-size:.5em; color:var(--muted); margin-bottom:.4em; letter-spacing:.1em;">
+      TECHNICAL PRESENTATION
+    </div>
+    <h1>Edge &amp;<br>Gateway AuthZ</h1>
+    <div class="subtitle">North-south enforcement &middot; API gateways &middot; identity-aware proxies</div>
+    <div style="width:60px; height:3px; background:var(--amber); margin-bottom:1.4em;"></div>
+    <div style="display:flex; gap:1.2em; flex-wrap:wrap; margin-bottom:1em;">
+      <span class="pill amber">JWT@edge</span>
+      <span class="pill green">ext_authz</span>
+      <span class="pill purple">Cloudflare Access</span>
+      <span class="pill blue">MCP Gateway</span>
+    </div>
+    <div class="ss-row" style="margin-top:0.6em;">
+      <span class="ss-node active">terminate TLS</span>
+      <span class="ss-arrow">→</span>
+      <span class="ss-node active">validate token</span>
+      <span class="ss-arrow">→</span>
+      <span class="ss-node active">enforce policy</span>
+      <span class="ss-arrow">→</span>
+      <span class="ss-node done">propagate identity</span>
+    </div>
+    <p style="max-width:660px; color:#a0a0c0; font-size:.56em; line-height:1.5; margin-top:1em;">
+      Where authorisation happens before the request reaches your service code — token validation, downscoping, rate-limit-as-policy, identity propagation. The complement to <em>Workload Identity &amp; Service-Mesh AuthZ</em> for north-south traffic.
+    </p>
+    <div class="meta" style="margin-top:1.4em;">
+      Validate &nbsp;·&nbsp; Enforce &nbsp;·&nbsp; Propagate &nbsp;·&nbsp; Observe
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ SLIDE 02 — TOPICS ═══ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr"><span class="tag">01</span><h2>Topics</h2></div>
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber">
+        <h3 class="a">Where the edge sits</h3>
+        <ul>
+          <li>Edge vs in-app authz — what each does best</li>
+          <li>Token validation at the edge — JWT vs introspection</li>
+          <li>The Envoy <code>ext_authz</code> pattern</li>
+          <li>mTLS termination &amp; identity propagation</li>
+        </ul>
+      </div>
+      <div class="card green" style="margin-top:0.5em;">
+        <h3 class="g">Concrete platforms</h3>
+        <ul>
+          <li>AWS API Gateway authorizers</li>
+          <li>Cloudflare Access / Workers</li>
+          <li>Kong, Apigee, Tyk, Krakend</li>
+          <li>Identity-aware proxies — IAP, BeyondCorp lineage</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card purple">
+        <h3 class="p">Patterns</h3>
+        <ul>
+          <li>Rate-limit-as-authorisation (per-tier, per-user, per-IP)</li>
+          <li>JWT downscoping &amp; Token Exchange at the edge</li>
+          <li>WAF vs AuthZ — knowing the boundary</li>
+          <li>GraphQL gateway patterns (per-field, persisted queries)</li>
+          <li>Webhook authorisation (signed payloads, replay protection)</li>
+          <li>Multi-tenant edge — tenant routing, header injection</li>
+        </ul>
+      </div>
+      <div class="card blue" style="margin-top:0.5em;">
+        <h3 class="b">Operational</h3>
+        <ul>
+          <li>MCP Gateway revisited as edge authz</li>
+          <li>Observability — latency, deny rates, attack signatures</li>
+          <li>Anti-patterns</li>
+          <li>Choosing a stack</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ SLIDE 03 — WHERE THE EDGE SITS ═══ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr"><span class="tag">02</span><h2>Where the Edge Sits — vs In-App AuthZ</h2></div>
+  <p>Authorisation can be enforced at three places along a request: the <span class="a">edge</span> (before the request enters your network), the <span class="g">gateway / mesh</span> (between services), and <span class="p">in the application</span>. Most production systems do all three; each layer covers what the others can't.</p>
+
+  <svg class="diagram" viewBox="0 0 940 250" width="900" height="250">
+    <rect x="20"  y="80" width="160" height="60" rx="6" fill="#1a1a2a" stroke="#60a5fa" stroke-width="1.5"/>
+    <text x="100" y="105" text-anchor="middle" fill="#60a5fa" font-family="Playfair Display,serif" font-size="13" font-weight="700">Internet client</text>
+    <text x="100" y="125" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">browser · mobile · agent · MCP host</text>
+
+    <rect x="220" y="80" width="180" height="60" rx="6" fill="#1a1a2a" stroke="#f5a623" stroke-width="2"/>
+    <text x="310" y="105" text-anchor="middle" fill="#f5a623" font-family="Playfair Display,serif" font-size="13" font-weight="700">EDGE</text>
+    <text x="310" y="123" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">CDN · CF Access · API Gateway</text>
+    <text x="310" y="135" text-anchor="middle" fill="#888" font-family="JetBrains Mono,monospace" font-size="8">→ THIS DECK</text>
+
+    <rect x="440" y="80" width="180" height="60" rx="6" fill="#1a1a2a" stroke="#a78bfa" stroke-width="1.5"/>
+    <text x="530" y="105" text-anchor="middle" fill="#a78bfa" font-family="Playfair Display,serif" font-size="13" font-weight="700">MESH / GATEWAY</text>
+    <text x="530" y="123" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">Envoy · Istio · Linkerd</text>
+    <text x="530" y="135" text-anchor="middle" fill="#888" font-family="JetBrains Mono,monospace" font-size="8">→ Workload AuthZ deck</text>
+
+    <rect x="660" y="80" width="180" height="60" rx="6" fill="#1a1a2a" stroke="#4ecb8d" stroke-width="1.5"/>
+    <text x="750" y="105" text-anchor="middle" fill="#4ecb8d" font-family="Playfair Display,serif" font-size="13" font-weight="700">APP</text>
+    <text x="750" y="123" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">in-process PEP, OPA, Cedar</text>
+    <text x="750" y="135" text-anchor="middle" fill="#888" font-family="JetBrains Mono,monospace" font-size="8">→ Authorization Models deck</text>
+
+    <line x1="180" y1="110" x2="220" y2="110" stroke="#888" stroke-width="1.2"/>
+    <line x1="400" y1="110" x2="440" y2="110" stroke="#888" stroke-width="1.2"/>
+    <line x1="620" y1="110" x2="660" y2="110" stroke="#888" stroke-width="1.2"/>
+
+    <text x="465" y="195" text-anchor="middle" fill="#888" font-family="DM Sans,sans-serif" font-size="11">Each layer is best at different rules. Don't try to push everything to the edge — and don't leave the edge bare.</text>
+  </svg>
+
+  <div class="cols cols-3" style="margin-top:0.2em;">
+    <div class="card amber"><h3 class="a">Edge is best at</h3><p>Coarse-grained checks, rate-limiting, attack mitigation, token-format validation, geofencing — anything that should drop the request <em>before</em> it costs your origin a CPU cycle.</p></div>
+    <div class="card green"><h3 class="g">Mesh / gateway is best at</h3><p>Workload-to-workload identity (mTLS), service-level authz, per-route policy bound to namespaces.</p></div>
+    <div class="card purple"><h3 class="p">App is best at</h3><p>Per-object decisions ("can Alice edit doc 42?"). The edge can't do this — it doesn't know your data model.</p></div>
+  </div>
+</section>
+
+
+<!-- ═══ SLIDE 04 — JWT VS INTROSPECTION ═══ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr"><span class="tag">03</span><h2>Token Validation at the Edge — JWT vs Introspection</h2></div>
+
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber">
+        <h3 class="a">JWT validation (offline)</h3>
+        <ul>
+          <li>Edge holds the IdP's JWKS in memory; verifies the signature locally.</li>
+          <li>Sub-millisecond per token; scales horizontally trivially.</li>
+          <li>Works offline (after the JWKS is fetched).</li>
+          <li><span class="r">Can't revoke before expiry</span> — a stolen token is valid until <code>exp</code>.</li>
+          <li>Mitigation: keep <code>exp</code> short (5–15 min); rely on refresh-token rotation at the IdP.</li>
+        </ul>
+      </div>
+      <div class="card green" style="margin-top:0.4em;">
+        <h3 class="g">Introspection (online)</h3>
+        <ul>
+          <li>Edge calls the IdP's <code>/introspect</code> endpoint with the token; IdP returns active=true/false plus claims.</li>
+          <li>Revocation is instant — once the IdP marks a token revoked, the next introspection says false.</li>
+          <li><span class="r">Adds 5–30 ms per request</span>, scales with the IdP's capacity.</li>
+          <li>Useful for opaque tokens (no signature to verify).</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card purple">
+        <h3 class="p">The hybrid pattern most real edges use</h3>
+        <ol style="padding-left:1.2em;">
+          <li>Validate the JWT signature locally (JWKS).</li>
+          <li>Cache the introspection result for the JTI for some short TTL (~30 s).</li>
+          <li>If the cache misses or the token's TTL is &gt; 5 min, call introspection.</li>
+          <li>On revocation event from the IdP (CAEP / SSF push), invalidate the cache key.</li>
+        </ol>
+        <p style="margin-top:.25em;">Best of both: 99 % of requests get the offline-fast path; high-value ones get the online check; revocation propagates within seconds.</p>
+      </div>
+      <div class="card red" style="margin-top:0.4em;">
+        <h3 class="r">Stop logging the token</h3>
+        <p>Edge logs are usually sampled into central observability. Anyone with read access to those logs becomes the user. Strip <code>Authorization</code> at the proxy; log only <code>sub</code> + a hash if you need correlation.</p>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">JWKS caching</h3>
+        <p>Cache 5–60 minutes; refresh aggressively on unknown <code>kid</code>; fall back to the previous JWKS for one rotation cycle to survive issuer key roll.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ SLIDE 05 — EXT_AUTHZ ═══ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr"><span class="tag">04</span><h2>The Envoy <code>ext_authz</code> Pattern</h2></div>
+  <p>Envoy is the data-plane underneath most modern edges and meshes (Istio, Cilium service-mesh mode, Cloud-native API gateways, AWS App Mesh). Its <code>ext_authz</code> filter is the canonical way to delegate authz to a separate service.</p>
+
+  <svg class="diagram" viewBox="0 0 940 240" width="900" height="240">
+    <rect x="20"  y="40" width="140" height="40" rx="5" fill="#1a1a2a" stroke="#60a5fa" stroke-width="1.5"/>
+    <text x="90" y="65" text-anchor="middle" fill="#60a5fa" font-family="Playfair Display,serif" font-size="13" font-weight="700">Client</text>
+
+    <rect x="280" y="40" width="180" height="40" rx="5" fill="#1a1a2a" stroke="#f5a623" stroke-width="2"/>
+    <text x="370" y="65" text-anchor="middle" fill="#f5a623" font-family="Playfair Display,serif" font-size="13" font-weight="700">Envoy</text>
+
+    <rect x="280" y="130" width="180" height="40" rx="5" fill="#1a1a2a" stroke="#a78bfa" stroke-width="1.5"/>
+    <text x="370" y="155" text-anchor="middle" fill="#a78bfa" font-family="Playfair Display,serif" font-size="13" font-weight="700">ext_authz service</text>
+    <text x="370" y="170" text-anchor="middle" fill="#888" font-family="JetBrains Mono,monospace" font-size="9">OPA / custom / Cedar</text>
+
+    <rect x="600" y="40" width="180" height="40" rx="5" fill="#1a1a2a" stroke="#4ecb8d" stroke-width="1.5"/>
+    <text x="690" y="65" text-anchor="middle" fill="#4ecb8d" font-family="Playfair Display,serif" font-size="13" font-weight="700">Upstream service</text>
+
+    <line x1="160" y1="60" x2="280" y2="60" stroke="#60a5fa" stroke-width="1.2" marker-end="url(#eg-b)"/>
+    <text x="220" y="55" text-anchor="middle" fill="#60a5fa" font-family="JetBrains Mono,monospace" font-size="9">1. request</text>
+
+    <line x1="370" y1="80" x2="370" y2="130" stroke="#f5a623" stroke-width="1.4" marker-end="url(#eg-a)"/>
+    <text x="380" y="105" fill="#f5a623" font-family="JetBrains Mono,monospace" font-size="9">2. CheckRequest (gRPC)</text>
+
+    <line x1="370" y1="170" x2="370" y2="210" stroke="#a78bfa" stroke-width="1.4"/>
+    <text x="380" y="195" fill="#a78bfa" font-family="JetBrains Mono,monospace" font-size="9">decision</text>
+    <line x1="370" y1="200" x2="370" y2="80" stroke="#a78bfa" stroke-width="1.4" marker-end="url(#eg-p)"/>
+
+    <line x1="460" y1="60" x2="600" y2="60" stroke="#4ecb8d" stroke-width="1.2" marker-end="url(#eg-g)"/>
+    <text x="530" y="55" text-anchor="middle" fill="#4ecb8d" font-family="JetBrains Mono,monospace" font-size="9">3. allow + headers</text>
+
+    <text x="465" y="225" text-anchor="middle" fill="#888" font-family="DM Sans,sans-serif" font-size="11">ext_authz can also <em>add headers</em> to the request — propagate <code>X-User-Sub</code>, <code>X-Tenant-ID</code>, downscoped tokens.</text>
+
+    <defs>
+      <marker id="eg-b" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#60a5fa"/></marker>
+      <marker id="eg-a" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#f5a623"/></marker>
+      <marker id="eg-p" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#a78bfa"/></marker>
+      <marker id="eg-g" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#4ecb8d"/></marker>
+    </defs>
+  </svg>
+
+  <div class="cols cols-2" style="margin-top:0.2em;">
+    <div>
+      <div class="card amber">
+        <h3 class="a">A typical Envoy filter config</h3>
+<pre><code>http_filters:
+  - name: envoy.filters.http.ext_authz
+    typed_config:
+      "@type": type.googleapis.com/envoy.extensions.filters.http.ext_authz.v3.ExtAuthz
+      transport_api_version: V3
+      grpc_service:
+        envoy_grpc: { cluster_name: ext_authz }
+        timeout: 0.25s
+      failure_mode_allow: false  # fail-closed
+      include_peer_certificate: true
+      with_request_body:
+        max_request_bytes: 8192
+        allow_partial_message: true</code></pre>
+      </div>
+    </div>
+    <div>
+      <div class="card green">
+        <h3 class="g">Typical authz services</h3>
+        <ul>
+          <li><span class="a">OPA</span> — built-in <code>envoy_ext_authz_grpc</code> server.</li>
+          <li><span class="a">Custom Go/Rust service</span> — for bespoke logic + cache.</li>
+          <li><span class="a">Cedar gRPC wrapper</span> — newer pattern using AWS Verified Permissions.</li>
+        </ul>
+      </div>
+      <div class="card red" style="margin-top:0.4em;">
+        <h3 class="r">Failure mode is policy</h3>
+        <p>If the authz service is unreachable, does Envoy let the request through (<code>failure_mode_allow: true</code>) or block it? The "right" answer depends on whether you'd rather have an outage or a security incident.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ SLIDE 06 — AWS API GATEWAY ═══ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr"><span class="tag">05</span><h2>AWS API Gateway Authorizers</h2></div>
+
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber">
+        <h3 class="a">Four flavours, four trade-offs</h3>
+        <table>
+          <thead><tr><th>Type</th><th>Use</th></tr></thead>
+          <tbody>
+            <tr><td><span class="g">IAM</span></td><td>Caller signs request with SigV4 (other AWS services / SDKs).</td></tr>
+            <tr><td><span class="g">JWT (HTTP API)</span></td><td>API Gateway validates JWTs against an OIDC issuer's JWKS. Sub-ms.</td></tr>
+            <tr><td><span class="g">Lambda authorizer (REQUEST)</span></td><td>Custom Lambda decides; can read headers, body, source IP.</td></tr>
+            <tr><td><span class="g">Lambda authorizer (TOKEN)</span></td><td>Same as REQUEST but only sees the <code>Authorization</code> header.</td></tr>
+            <tr><td><span class="g">Cognito user-pool</span></td><td>Built-in for tenants who use Cognito as the IdP.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card green" style="margin-top:0.4em;">
+        <h3 class="g">Lambda authorizer caching</h3>
+        <ul>
+          <li>API Gateway can cache the Lambda authorizer's IAM-policy output by a chosen key (token, or token+method, or token+request).</li>
+          <li>5 min default; up to 1 hour.</li>
+          <li>Saves the Lambda invocation cost on hot paths but caps revocation latency at the TTL.</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card purple">
+        <h3 class="p">A REQUEST Lambda returning a policy</h3>
+<pre><code>def handler(event, context):
+    token = event['headers']['authorization'].split()[1]
+    user  = verify_jwt(token, jwks_cache)
+    return {
+      'principalId': user['sub'],
+      'policyDocument': {
+        'Version': '2012-10-17',
+        'Statement': [{
+          'Effect': 'Allow',
+          'Action': 'execute-api:Invoke',
+          'Resource': event['methodArn']
+        }]
+      },
+      'context': {                # passed to backend as headers
+        'sub':       user['sub'],
+        'tenant_id': user['tenant_id'],
+        'scope':     ' '.join(user['scope'])
+      }
+    }</code></pre>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">REST vs HTTP API trade-off</h3>
+        <p>REST API is older, more features (request validation, mapping templates), more expensive. HTTP API is newer, leaner, much cheaper, has the built-in JWT authorizer. <span class="g">Pick HTTP API unless you genuinely need REST features.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ SLIDE 07 — CLOUDFLARE / WORKERS ═══ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr"><span class="tag">06</span><h2>Cloudflare Access &amp; Workers</h2></div>
+
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber">
+        <h3 class="a">Cloudflare Access — IAP for everything</h3>
+        <ul>
+          <li>Protects an HTTP origin (or self-hosted app via Cloudflare Tunnel) behind a chosen IdP.</li>
+          <li>User hits app URL; CF Access redirects to OIDC/SAML; on success issues a CF JWT cookie.</li>
+          <li>Origin only sees requests bearing a valid CF JWT (with <code>email</code>, <code>sub</code>, <code>groups</code>).</li>
+          <li>Works for unmodified legacy apps — no app code change.</li>
+          <li>Free tier (50 users); commercial tier integrates with Okta/Entra/Google + posture signals.</li>
+        </ul>
+      </div>
+      <div class="card green" style="margin-top:0.4em;">
+        <h3 class="g">Validation at the origin</h3>
+<pre><code># the JWT is in CF-Access-Jwt-Assertion header
+const token = req.headers['cf-access-jwt-assertion'];
+const claims = await verifyJwt(token,
+  'https://&lt;team&gt;.cloudflareaccess.com/cdn-cgi/access/certs');
+require(claims.aud === MY_AUD);
+req.user = { sub: claims.sub, email: claims.email };</code></pre>
+      </div>
+    </div>
+    <div>
+      <div class="card purple">
+        <h3 class="p">Cloudflare Workers — programmable edge</h3>
+        <ul>
+          <li>Edge compute on every PoP (~ 300+ cities).</li>
+          <li>Run authz logic <em>before</em> the request reaches your origin: token validation, header injection, downscoping, rate limiting, A/B routing.</li>
+          <li>Workers KV / D1 / Durable Objects for state (token revocation list, per-tenant policy).</li>
+          <li>~10 ms cold start; ~1 ms warm.</li>
+        </ul>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">A typical Worker</h3>
+<pre><code>export default {
+  async fetch(req, env) {
+    const t = req.headers.get('authorization')?.split(' ')[1];
+    const claims = await verifyJwt(t, env.JWKS_URL);
+    if (!claims || !claims.scope.includes('api:read'))
+      return new Response('forbidden', { status: 403 });
+
+    const headers = new Headers(req.headers);
+    headers.set('x-user-sub',  claims.sub);
+    headers.set('x-tenant',    claims.tenant_id);
+    headers.delete('authorization');   // strip before origin
+
+    return fetch(req.url, { method: req.method, body: req.body, headers });
+  }
+}</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ SLIDE 08 — KONG / APIGEE / TYK ═══ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr"><span class="tag">07</span><h2>Kong &middot; Apigee &middot; Tyk &middot; Krakend</h2></div>
+
+  <table>
+    <thead><tr><th>Gateway</th><th>Engine</th><th>Auth plugins</th><th>Sweet spot</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="a">Kong</span></td>
+        <td>Nginx + Lua / Wasm; OSS &amp; commercial</td>
+        <td>JWT, OAuth 2.0 introspection, OIDC plugin, mTLS, key-auth, ACL, OPA plugin</td>
+        <td>K8s-native (Kong Ingress Controller); strong plugin ecosystem; popular self-host</td>
+      </tr>
+      <tr>
+        <td><span class="a">Apigee</span></td>
+        <td>Google-managed</td>
+        <td>OAuth, OIDC, SAML, API key, custom JS / Java callouts</td>
+        <td>Enterprise-grade; deep analytics; expensive</td>
+      </tr>
+      <tr>
+        <td><span class="a">Tyk</span></td>
+        <td>Go; OSS &amp; cloud</td>
+        <td>JWT, OAuth, OIDC, key-auth, mTLS, custom middleware</td>
+        <td>Smaller-team alternative to Kong; good for self-host</td>
+      </tr>
+      <tr>
+        <td><span class="a">Krakend</span></td>
+        <td>Go; OSS &amp; commercial</td>
+        <td>JWT, OAuth introspection, mTLS, OPA</td>
+        <td>API <em>aggregation</em> (one inbound request fans out to many backends) more than authz; pairs well with stateless JWT</td>
+      </tr>
+      <tr>
+        <td><span class="a">Envoy + Istio Gateway</span></td>
+        <td>Envoy</td>
+        <td>JWT (RequestAuthentication), ext_authz, mTLS, RBAC</td>
+        <td>If you're already on Istio mesh — same primitives at the edge</td>
+      </tr>
+      <tr>
+        <td><span class="a">AWS / GCP / Azure managed</span></td>
+        <td>Cloud-managed</td>
+        <td>Native IdP integrations</td>
+        <td>Lowest-ops if you're cloud-native</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="cols cols-2" style="margin-top:0.4em;">
+    <div class="card amber">
+      <h3 class="a">A Kong route with JWT + ACL plugins</h3>
+<pre><code>routes:
+  - name:    payments
+    paths:   ["/v1/payments"]
+    methods: ["POST"]
+    plugins:
+      - name: jwt
+        config: { secret_is_base64: false }
+      - name: acl
+        config: { allow: ["payments-writer"] }
+      - name: rate-limiting
+        config: { minute: 60, policy: redis, redis_host: rl.svc }</code></pre>
+    </div>
+    <div class="card green">
+      <h3 class="g">Choosing</h3>
+      <ul>
+        <li>Already on K8s? — Kong / Tyk / Envoy via Istio Gateway.</li>
+        <li>Already on a hyperscaler? — managed first, escape if needed.</li>
+        <li>Need API <em>aggregation</em>? — Krakend.</li>
+        <li>Enterprise scale + analytics? — Apigee.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ SLIDE 09 — RATE LIMIT AS AUTHZ ═══ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr"><span class="tag">08</span><h2>Rate-Limit-as-Authorisation</h2></div>
+  <p>Most rate-limit configurations are de-facto authorisation policies — "<em>this caller may do <strong>at most</strong> this many requests per minute, per hour, per day</em>". Treating them as such (and enforcing at the edge) is one of the highest-leverage pieces of authz you can ship.</p>
+
+  <div class="cols cols-2" style="margin-top:0.4em;">
+    <div>
+      <div class="card amber">
+        <h3 class="a">The four common keys</h3>
+        <ul>
+          <li><span class="g">Per-IP</span> — easiest, weakest. Botnets defeat it.</li>
+          <li><span class="g">Per-API-key</span> — for partner / B2B traffic.</li>
+          <li><span class="g">Per-user-sub</span> — for authenticated traffic. Works because the user's <code>sub</code> is signed.</li>
+          <li><span class="g">Per-tenant</span> — for multi-tenant SaaS, often combined with per-tier (free / pro / enterprise).</li>
+        </ul>
+      </div>
+      <div class="card green" style="margin-top:0.4em;">
+        <h3 class="g">Stacked limits</h3>
+<pre><code># per-tenant ceiling
+- key: req.headers["x-tenant-id"]
+  limit: 10000/min
+
+# per-user inside a tenant
+- key: req.jwt.claims.sub
+  limit: 600/min
+
+# per-route ceiling
+- key: req.method + req.path
+  limit: 5000/min
+</code></pre>
+        <p>Run all three; the <em>most-restrictive</em> wins.</p>
+      </div>
+    </div>
+    <div>
+      <div class="card purple">
+        <h3 class="p">Sliding window vs token bucket</h3>
+        <ul>
+          <li><span class="a">Token bucket</span> — refills at rate R, allows bursts up to B. Forgiving of brief spikes; the default for most consumer APIs.</li>
+          <li><span class="a">Sliding window</span> — strict X requests in the last 60 s. Stricter; fairer; preferred for billing-tier limits.</li>
+          <li><span class="a">Concurrency limit</span> — at most N in-flight per key. Useful for long-lived requests (LLM inference).</li>
+        </ul>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">Communicating limits to clients</h3>
+        <ul>
+          <li>Headers: <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code>, <code>X-RateLimit-Reset</code>.</li>
+          <li>On 429: <code>Retry-After</code> header + a JSON body explaining the limit hit (per-tenant? per-user? per-route?).</li>
+          <li>Don't 429 silently — clients won't back off if they don't know why.</li>
+        </ul>
+      </div>
+      <div class="card red" style="margin-top:0.4em;">
+        <h3 class="r">Anti-pattern</h3>
+        <p>Rate-limit per-IP only when your traffic is mostly authenticated. A small tenant gets crushed by a noisy neighbour on the same NAT.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ SLIDE 10 — MTLS TERMINATION ═══ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr"><span class="tag">09</span><h2>mTLS Termination &amp; Identity Propagation</h2></div>
+
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber">
+        <h3 class="a">The pattern</h3>
+        <ol style="padding-left:1.2em;">
+          <li>Client presents a client certificate (or DPoP-bound token) at the edge.</li>
+          <li>Edge terminates TLS, validates the cert against a configured CA / trust bundle.</li>
+          <li>Edge extracts the cert's identity (CN, SAN, SPIFFE ID) and injects it as a header for the upstream.</li>
+          <li>Upstream services trust the header — but only because they trust the edge as the issuer.</li>
+        </ol>
+      </div>
+      <div class="card green" style="margin-top:0.4em;">
+        <h3 class="g">A typical header injection</h3>
+<pre><code># nginx
+proxy_set_header X-Client-DN     $ssl_client_s_dn;
+proxy_set_header X-Client-CN     $ssl_client_s_dn_cn;
+proxy_set_header X-Client-Verify $ssl_client_verify;
+proxy_set_header X-Client-Cert   $ssl_client_escaped_cert;
+
+# Envoy with forward_client_cert_details: SANITIZE_SET
+http_connection_manager:
+  forward_client_cert_details: SANITIZE_SET
+  set_current_client_cert_details:
+    subject: true
+    uri:     true   # SPIFFE URI SANs
+    cert:    true</code></pre>
+      </div>
+    </div>
+    <div>
+      <div class="card red">
+        <h3 class="r">The headers MUST be sanitised</h3>
+        <ul>
+          <li>If the client can set <code>X-Client-DN</code> directly and the edge doesn't strip it, the upstream is happily trusting the attacker.</li>
+          <li>Edge config: <em>always</em> strip these headers from the inbound request, then re-inject them with verified values.</li>
+          <li>Envoy's <code>SANITIZE_SET</code> mode does this automatically. Nginx requires explicit <code>proxy_set_header</code> overriding.</li>
+        </ul>
+      </div>
+      <div class="card purple" style="margin-top:0.4em;">
+        <h3 class="p">SPIFFE URIs at the edge</h3>
+        <p>If you're already issuing SPIFFE SVIDs internally (see Workload Identity deck), an edge that inspects the SAN URI of the client cert can give upstreams a SPIFFE ID directly — same identity model end-to-end.</p>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">DPoP-bound tokens at the edge</h3>
+        <p>Same idea, different mechanism. Edge validates the DPoP proof header; replaces the user's bearer with a server-to-server token (token exchange) that proves "request was bound to a key the user holds".</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ SLIDE 11 — JWT DOWNSCOPING ═══ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr"><span class="tag">10</span><h2>JWT Downscoping &amp; Token Exchange at the Edge</h2></div>
+
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber">
+        <h3 class="a">Downscoping — the idea</h3>
+        <ul>
+          <li>User's access token has scope <code>billing:read billing:write payments:refund</code>.</li>
+          <li>This particular request hits a <em>read-only</em> endpoint.</li>
+          <li>The edge issues a <em>downscoped</em> token to the upstream — <code>billing:read</code> only.</li>
+          <li>If the upstream is compromised, the blast radius of the token it leaks is bounded.</li>
+        </ul>
+      </div>
+      <div class="card green" style="margin-top:0.4em;">
+        <h3 class="g">Mechanisms</h3>
+        <ul>
+          <li><span class="a">Token Exchange (RFC 8693)</span> — edge calls the IdP's <code>/token</code> with <code>grant_type=token-exchange</code>, requesting a narrower-scope subject token.</li>
+          <li><span class="a">Macaroons / Biscuit</span> — capability-style tokens that can be attenuated client-side without calling back to the IdP.</li>
+          <li><span class="a">Signed internal JWTs</span> — edge mints its own short-lived JWT with the narrowed scope, signed by an internal key the upstreams trust.</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card purple">
+        <h3 class="p">A token-exchange call at the edge</h3>
+<pre><code>POST /token HTTP/1.1
+Host: idp.acme.com
+Authorization: Basic base64(edge_client:secret)
+
+grant_type=urn:ietf:params:oauth:grant-type:token-exchange&
+subject_token=&lt;user's incoming access token&gt;&
+subject_token_type=urn:ietf:params:oauth:token-type:access_token&
+audience=https://api-internal/billing-svc&
+scope=billing:read</code></pre>
+        <p style="margin-top:.25em;">Result: a token usable only at <code>billing-svc</code> for <code>billing:read</code>, with the original user's <code>sub</code> preserved and the edge as <code>act</code>.</p>
+      </div>
+      <div class="card red" style="margin-top:0.4em;">
+        <h3 class="r">Watch latency</h3>
+        <p>A token-exchange call per request adds a ~10 ms IdP round-trip. Cache the downscoped token by (user_sub, target_audience, scope) for the original token's TTL minus a safety margin.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ SLIDE 12 — WAF VS AUTHZ ═══ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr"><span class="tag">11</span><h2>WAF vs AuthZ — Knowing the Boundary</h2></div>
+
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber">
+        <h3 class="a">WAF — pattern-matching security</h3>
+        <ul>
+          <li>OWASP CRS-style rules — block SQLi-looking strings, XSS payloads, suspicious User-Agents.</li>
+          <li>IP-reputation lists, geo-blocks.</li>
+          <li>Bot management — challenge / Turnstile / hCaptcha.</li>
+          <li>DDoS absorption.</li>
+        </ul>
+      </div>
+      <div class="card green" style="margin-top:0.4em;">
+        <h3 class="g">AuthZ — identity-aware decisions</h3>
+        <ul>
+          <li>Validates tokens, enforces scopes, evaluates per-resource policy.</li>
+          <li>Reads JWT claims; evaluates against the rule for this route + this user.</li>
+          <li>Can downscope, propagate, audit.</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card purple">
+        <h3 class="p">Where they overlap (and why it's confusing)</h3>
+        <ul>
+          <li><span class="a">Rate limiting</span> — both layers do it. WAF for volumetric / pre-auth; authz for per-user / post-auth.</li>
+          <li><span class="a">Geo-blocking</span> — WAF level. But "this user is signing in from a forbidden country" is a CAEP / risk-based-auth signal — different layer.</li>
+          <li><span class="a">Per-route allow-listing</span> — both can do it. WAF for "this path doesn't exist publicly"; authz for "this user doesn't have the scope".</li>
+        </ul>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">A useful rule</h3>
+        <p>If the rule depends on <em>who</em> the request is from (a verified identity) it belongs to authz. If it depends only on <em>what</em> the request looks like, it's WAF. Don't put "is the JWT valid?" in WAF rules; don't put "block this CIDR" in authz code.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ SLIDE 13 — GRAPHQL ═══ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr"><span class="tag">12</span><h2>GraphQL Gateway Patterns</h2></div>
+  <p>GraphQL collapses many REST endpoints into a single POST. Edge authorisation needs different patterns to keep up.</p>
+
+  <div class="cols cols-2" style="margin-top:0.4em;">
+    <div>
+      <div class="card amber">
+        <h3 class="a">Per-field authz</h3>
+        <ul>
+          <li>The same query may select a public field and a privileged one in one round-trip.</li>
+          <li>Edge can't enforce easily — it would need to parse the query and walk the AST.</li>
+          <li>Practical pattern: enforce in the GraphQL server (resolver-level), with an edge layer that only does coarse "user is authenticated, query depth ≤ N".</li>
+          <li>Tools: <span class="a">graphql-shield</span>, <span class="a">@graphql-tools/auth</span>, custom directives like <code>@requiresScope</code>.</li>
+        </ul>
+      </div>
+      <div class="card green" style="margin-top:0.4em;">
+        <h3 class="g">Persisted queries — the edge-friendly answer</h3>
+        <ul>
+          <li>Client sends a <em>hash</em>; the edge looks up the registered query.</li>
+          <li>Allow-list: the edge rejects any query hash not in its registry.</li>
+          <li>Each persisted query can carry pre-computed authz metadata: required scopes, complexity, intended tenant.</li>
+          <li>Bonus: smaller payloads, faster parsing.</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card purple">
+        <h3 class="p">Other edge controls for GraphQL</h3>
+        <ul>
+          <li><span class="a">Query depth limits</span> — guard against malicious nested queries.</li>
+          <li><span class="a">Query complexity scoring</span> — each field has a cost; sum must be under a budget tied to the user's tier.</li>
+          <li><span class="a">Introspection toggle</span> — disable in production for less attack surface.</li>
+          <li><span class="a">Dataloader-level rate limits</span> — per-N+1-fanout, not just per-request.</li>
+        </ul>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">If you're considering federation</h3>
+        <p>Apollo Router / Wundergraph Cosmo are GraphQL gateways with built-in JWT validation, per-operation policy and persisted query support. They are an alternative to a generic edge for GraphQL-heavy stacks.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ SLIDE 14 — WEBHOOKS ═══ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr"><span class="tag">13</span><h2>Webhook Authorisation — Signed Payloads &amp; Replay</h2></div>
+  <p>Webhooks are the inverse pattern: an external service POSTs to <em>your</em> endpoint. There is no user-agent and no OAuth flow; you must authenticate the sender from the request itself.</p>
+
+  <div class="cols cols-2" style="margin-top:0.4em;">
+    <div>
+      <div class="card amber">
+        <h3 class="a">The standard pattern</h3>
+        <ul>
+          <li>Sender computes <code>HMAC-SHA256(secret, body)</code> and sends it in a header (<code>Stripe-Signature</code>, <code>X-Hub-Signature-256</code>).</li>
+          <li>Receiver recomputes and compares using a constant-time function.</li>
+          <li>Sender includes a timestamp; receiver rejects events older than ~ 5 minutes (replay protection).</li>
+          <li>Receiver records the event ID; rejects duplicates within the replay window.</li>
+        </ul>
+      </div>
+      <div class="card green" style="margin-top:0.4em;">
+        <h3 class="g">Signature verification, in practice</h3>
+<pre><code>const sig    = req.headers['stripe-signature'];
+const ts     = parseTs(sig);
+if (Math.abs(now() - ts) &gt; 300) reject();  // replay window
+
+const expected = hmacSha256(SECRET, ts + '.' + req.rawBody);
+if (!constantTimeEq(sig.v1, expected)) reject();
+
+if (eventStore.has(req.body.id)) return ok();  // idempotent
+eventStore.add(req.body.id);
+process(req.body);</code></pre>
+      </div>
+    </div>
+    <div>
+      <div class="card purple">
+        <h3 class="p">Modern alternatives</h3>
+        <ul>
+          <li><span class="a">mTLS</span> — sender presents a cert; great for B2B partners.</li>
+          <li><span class="a">OIDC-signed webhooks</span> — sender mints a JWT signed with a published key; receiver validates via JWKS. More flexible than HMAC; requires the sender to host JWKS.</li>
+          <li><span class="a">CloudEvents + JWS</span> — emerging standard envelope for events with optional JWS signatures.</li>
+        </ul>
+      </div>
+      <div class="card red" style="margin-top:0.4em;">
+        <h3 class="r">Common mistakes</h3>
+        <ul>
+          <li>Verifying against the parsed JSON instead of the raw body. Whitespace differences = wrong HMAC.</li>
+          <li>Skipping the timestamp / replay check.</li>
+          <li>Storing the webhook secret in app-level env vars accessible to every developer.</li>
+          <li>Auto-rotating the secret without telling the sender (every webhook breaks at midnight).</li>
+        </ul>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">Idempotency &amp; the receiver contract</h3>
+        <p>Webhooks are at-least-once. Your handler must be idempotent — keyed on the event ID — or you'll double-charge customers when the sender retries.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ SLIDE 15 — MCP GATEWAY ═══ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr"><span class="tag">14</span><h2>MCP Gateway Revisited — The AI-Era Edge AuthZ</h2></div>
+
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber">
+        <h3 class="a">Why MCP Gateway is an edge authz pattern</h3>
+        <ul>
+          <li>An LLM host (Claude Desktop, Cursor, claude.ai) wants to call <em>n</em> remote MCP servers.</li>
+          <li>Each MCP server has its own OAuth issuer, scope vocabulary, and consent UX.</li>
+          <li>The Gateway sits at the edge of the host's process — terminates the host's connection, holds the per-server tokens, mints fresh ones, and proxies.</li>
+          <li>Conceptually identical to a B2B "API gateway as the OAuth client" pattern: one trusted broker handles every external call.</li>
+        </ul>
+      </div>
+      <div class="card green" style="margin-top:0.4em;">
+        <h3 class="g">What the Gateway does that a generic edge doesn't</h3>
+        <ul>
+          <li>Per-server <em>OAuth interceptor</em> — discovers, registers, exchanges code → tokens, refreshes silently.</li>
+          <li>Per-server scope filtering — host can ask for any tool, gateway only forwards tools the user consented to.</li>
+          <li>Centralised audit — one log of every tool invocation across every MCP server.</li>
+          <li>Optional policy overlay — block destructive tools per-tenant, per-time-of-day, per-risk-score.</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card purple">
+        <h3 class="p">A general "agent edge" emerging</h3>
+        <ul>
+          <li>The MCP Gateway is the start. Other vendors (Stytch, WorkOS, Auth0) are shipping similar "agent identity proxies".</li>
+          <li>All converge on the same shape: validate the human-user identity, validate the agent's identity, mint short-lived downscoped tokens to upstream APIs, audit every action.</li>
+          <li>Expect this to be a generic "agent gateway" product category by 2027.</li>
+        </ul>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">Cross-references</h3>
+        <p><span class="a">OAuth_for_MCP</span> for the OAuth profile MCP uses; <span class="a">Workload_Identity_AuthZ</span> for the agent's own identity; this deck for the gateway pattern itself.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ SLIDE 16 — MULTI-TENANT EDGE ═══ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr"><span class="tag">15</span><h2>Multi-Tenant Edge — Routing &amp; Header Injection</h2></div>
+
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber">
+        <h3 class="a">How the edge tells which tenant a request is for</h3>
+        <ul>
+          <li><span class="g">Subdomain</span> — <code>{tenant}.acme.com</code>. Easiest. Requires wildcard cert.</li>
+          <li><span class="g">Path prefix</span> — <code>/t/{tenant}/...</code>. Trivial for proxies; ugly for end users.</li>
+          <li><span class="g">JWT claim</span> — <code>tenant_id</code> claim in the user's access token. The right answer for B2B SaaS where the user belongs to one tenant.</li>
+          <li><span class="g">Header from upstream IdP</span> — IdP injects a tenant claim during sign-in.</li>
+        </ul>
+      </div>
+      <div class="card green" style="margin-top:0.4em;">
+        <h3 class="g">After identification — what flows down</h3>
+<pre><code># strip everything client-controlled
+x-tenant-id:    DELETE
+x-user-sub:     DELETE
+x-user-scope:   DELETE
+x-org-id:       DELETE
+
+# inject from verified sources
+x-tenant-id:    {jwt.tenant_id}
+x-user-sub:     {jwt.sub}
+x-user-scope:   {jwt.scope}
+x-request-id:   {edge-generated UUID}</code></pre>
+      </div>
+    </div>
+    <div>
+      <div class="card purple">
+        <h3 class="p">Per-tenant policy at the edge</h3>
+        <ul>
+          <li>Different tenants get different rate limits, IP allow-lists, geo restrictions, scope policies.</li>
+          <li>Lookup by tenant_id from a config store (DynamoDB / Workers KV / Consul) at the edge — sub-ms with hot caches.</li>
+          <li>Cache invalidation: on tenant config change, push to the edge (CAEP-style or a fanout to PoPs).</li>
+        </ul>
+      </div>
+      <div class="card red" style="margin-top:0.4em;">
+        <h3 class="r">Tenant isolation traps</h3>
+        <ul>
+          <li><span class="r">Trusting client-supplied tenant headers</span> — always strip then re-inject from a verified source.</li>
+          <li><span class="r">Caching by URL only</span> when the URL is identical across tenants. Cache by URL <em>and</em> tenant_id.</li>
+          <li><span class="r">Logging tenant data globally</span> — if logs land in one Splunk index, your data-residency story is half-true.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ SLIDE 17 — OBSERVABILITY ═══ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr"><span class="tag">16</span><h2>Observability — Latency, Deny Rates, Attack Signatures</h2></div>
+
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber">
+        <h3 class="a">Edge metrics worth wiring up</h3>
+        <ul>
+          <li><span class="g"><code>edge.authz.deny_total{reason}</code></span> — labelled by <code>invalid_token</code>, <code>insufficient_scope</code>, <code>rate_limited</code>, <code>geo_blocked</code>.</li>
+          <li><span class="g"><code>edge.token.validate.duration_ms</code></span> — quantile per IdP / per JWKS endpoint.</li>
+          <li><span class="g"><code>edge.tenant.req_total{tenant_id, route, status}</code></span> — fans out into per-customer dashboards.</li>
+          <li><span class="g"><code>edge.upstream.duration_ms</code></span> — to surface "slow because of upstream" vs "slow because of authz".</li>
+          <li><span class="g"><code>edge.authz.cache.hit_rate</code></span> — &lt; 95 % means your caching strategy needs work.</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card green">
+        <h3 class="g">Detection signals</h3>
+        <ul>
+          <li>Spikes in <code>invalid_token</code> from a single IP/ASN — credential stuffing or token enumeration.</li>
+          <li>Unusual <code>insufficient_scope</code> on routes the user has never hit — privilege probing.</li>
+          <li>Sudden CAEP / introspection-cache miss spike — a token was revoked at the IdP and 47 services are hitting your edge with it.</li>
+          <li>JWKS fetch errors — the edge is about to start failing closed.</li>
+        </ul>
+      </div>
+      <div class="card purple" style="margin-top:0.4em;">
+        <h3 class="p">Audit log line — what to include</h3>
+<pre><code>{
+  "ts": "2026-05-06T09:00:01Z",
+  "request_id": "abc…",
+  "edge_pop":   "lhr01",
+  "tenant_id":  "t_42",
+  "user_sub":   "u_1234",
+  "method":     "POST",
+  "path":       "/v1/payments",
+  "decision":   "allow",
+  "matched_rule": "policy:billing-write@v17",
+  "upstream":   "billing-svc.eu-west-1",
+  "latency_ms": 4.2
+}</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ SLIDE 18 — ANTI-PATTERNS ═══ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr"><span class="tag">17</span><h2>Anti-Patterns</h2></div>
+
+  <div class="cols cols-2">
+    <div>
+      <div class="card red">
+        <h3 class="r">Trusting client-supplied identity headers</h3>
+        <p>The edge must <em>strip and re-inject</em>. Anything in <code>X-User-*</code> arriving at the upstream must originate from your edge, not the internet.</p>
+      </div>
+      <div class="card red" style="margin-top:0.3em;">
+        <h3 class="r">Long-lived JWKS caches</h3>
+        <p>JWKS cached for &gt; 24 h means key rotation breaks your edge. Cache 5–60 min; refresh on unknown <code>kid</code>.</p>
+      </div>
+      <div class="card red" style="margin-top:0.3em;">
+        <h3 class="r">Default-allow on auth-server outage</h3>
+        <p><code>failure_mode_allow: true</code> is a footgun. If the IdP is down, do you want every request through, or every request blocked? Decide deliberately.</p>
+      </div>
+      <div class="card red" style="margin-top:0.3em;">
+        <h3 class="r">Logging Authorization headers</h3>
+        <p>Tokens end up in CloudWatch / Datadog. Strip at the proxy.</p>
+      </div>
+    </div>
+    <div>
+      <div class="card red">
+        <h3 class="r">Authz code in the WAF, WAF rules in the authz</h3>
+        <p>Pattern matching belongs to WAF. Identity-aware decisions belong to authz. Mixing them produces brittle, slow rules.</p>
+      </div>
+      <div class="card red" style="margin-top:0.3em;">
+        <h3 class="r">Per-IP rate limits as the only defence</h3>
+        <p>Botnets and CGNAT defeat per-IP. Use per-user / per-tenant for authenticated traffic.</p>
+      </div>
+      <div class="card red" style="margin-top:0.3em;">
+        <h3 class="r">Forgetting the OPTIONS / CORS preflight</h3>
+        <p>Your fancy edge authz blocks the browser's preflight. The actual request never goes. Allow OPTIONS through unauthenticated; respond with the right CORS headers; let the real request hit authz.</p>
+      </div>
+      <div class="card red" style="margin-top:0.3em;">
+        <h3 class="r">Static API keys as the only auth</h3>
+        <p>For partners, fine — but pair with mTLS / IP allow-list / per-key rate limits. A leaked key without those guards is a perpetual breach.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ SLIDE 19 — CHOOSING ═══ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr"><span class="tag">18</span><h2>Choosing a Stack</h2></div>
+
+  <table>
+    <thead><tr><th>If you're...</th><th>Likely best</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>A consumer SaaS with a global audience</td>
+        <td><span class="a">Cloudflare Access + Workers</span></td>
+        <td>~300 PoPs; built-in IdP integrations; programmable for custom logic.</td>
+      </tr>
+      <tr>
+        <td>Heavily AWS-centric, cost-sensitive</td>
+        <td><span class="a">AWS HTTP API + Lambda authorizers</span></td>
+        <td>Cheap, native IAM glue, JWT authorizer for free.</td>
+      </tr>
+      <tr>
+        <td>K8s-native, want OSS &amp; plugins</td>
+        <td><span class="a">Kong</span> / <span class="a">Tyk</span></td>
+        <td>K8s ingress controllers, JWT/OIDC plugins, OPA integration.</td>
+      </tr>
+      <tr>
+        <td>Already on Istio mesh</td>
+        <td><span class="a">Istio Gateway + RequestAuthentication + AuthorizationPolicy</span></td>
+        <td>Same primitives as your mesh; one place to maintain policy.</td>
+      </tr>
+      <tr>
+        <td>Internal tools / "make every app SSO"</td>
+        <td><span class="a">Cloudflare Access</span> or <span class="a">Pomerium</span> or <span class="a">oauth2-proxy</span></td>
+        <td>Identity-aware proxy in front of unmodified apps; cheap to deploy.</td>
+      </tr>
+      <tr>
+        <td>Enterprise scale, deep analytics</td>
+        <td><span class="a">Apigee</span> or <span class="a">Mulesoft</span></td>
+        <td>Established enterprise controls; cost reflects it.</td>
+      </tr>
+      <tr>
+        <td>API <em>aggregation</em> across many backends</td>
+        <td><span class="a">Krakend</span></td>
+        <td>One inbound request fans out, recombines responses; JWT/OIDC at the edge.</td>
+      </tr>
+      <tr>
+        <td>Building / shipping an MCP / agent product</td>
+        <td><span class="a">Docker MCP Gateway</span> + your usual edge</td>
+        <td>Specialised edge for agent ↔ MCP-server flows; coexists with whatever else is at your edge.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+
+<!-- ═══ SLIDE 20 — SUMMARY ═══ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr"><span class="tag">19</span><h2>Summary &amp; References</h2></div>
+
+  <div class="cols cols-2">
+    <div>
+      <div class="card amber">
+        <h3 class="a">What we covered</h3>
+        <ul>
+          <li>Edge vs mesh vs in-app authz — what each layer does best</li>
+          <li>Token validation at the edge — JWT vs introspection, the hybrid pattern</li>
+          <li>Envoy <code>ext_authz</code> — the canonical delegation pattern</li>
+          <li>AWS API Gateway authorizers — the four flavours</li>
+          <li>Cloudflare Access &amp; Workers — IAP for everything + programmable edge</li>
+          <li>Kong / Apigee / Tyk / Krakend — per-platform fit</li>
+          <li>Rate-limit-as-authorisation — keys, windows, communicating limits</li>
+          <li>mTLS termination + identity propagation (and the "sanitise headers" rule)</li>
+          <li>JWT downscoping &amp; token exchange at the edge</li>
+          <li>WAF vs AuthZ — knowing the boundary</li>
+          <li>GraphQL gateway patterns &middot; webhook authorisation</li>
+          <li>MCP Gateway as the AI-era edge authz pattern</li>
+          <li>Multi-tenant edge &middot; observability &middot; anti-patterns &middot; choosing a stack</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card green">
+        <h3 class="g">Three take-aways</h3>
+        <ol style="padding-left:1.2em;">
+          <li><span class="a">Don't push everything to the edge.</span> Coarse decisions belong here; per-object rules belong in the app. Layer them.</li>
+          <li><span class="a">Strip then re-inject identity headers.</span> Anything the upstream reads from <code>X-User-*</code> must originate from <em>your</em> edge, not the internet.</li>
+          <li><span class="a">Treat rate limits as authorisation policy.</span> They're cheap, effective and most outages would have been smaller if they'd been wired up before launch.</li>
+        </ol>
+      </div>
+      <div class="card blue" style="margin-top:0.4em;">
+        <h3 class="b">Companion decks</h3>
+        <p><span class="a">Authorization Models</span> &middot; <span class="a">Workload Identity &amp; Service-Mesh AuthZ</span> &middot; <span class="a">OAuth for MCP Servers</span> &middot; <span class="a">Advanced OpenID Connect</span> &middot; <span class="a">Cloud_aaS_05_Cloud_Security</span>.</p>
+      </div>
+      <div class="card purple" style="margin-top:0.4em;">
+        <h3 class="p">References</h3>
+        <p>Envoy ext_authz docs &middot; Istio RequestAuthentication / AuthorizationPolicy &middot; AWS API Gateway authorizers &middot; Cloudflare Access &amp; Workers &middot; Kong gateway docs &middot; Apigee policy reference &middot; OWASP API Security Top 10 (2023) &middot; OWASP CRS (WAF) &middot; CloudEvents v1.0 + JWS &middot; Stripe / GitHub webhook signing &middot; Apollo Router / Wundergraph &middot; OpenID SSF / CAEP &middot; RFC 6749 / 7519 / 8693 / 9449</p>
+      </div>
+      <div class="card red" style="margin-top:0.4em;">
+        <h3 class="r">One-line takeaway</h3>
+        <p>The edge is your cheapest authorisation layer — drop bad requests there, propagate verified identity downstream, and let the app worry about per-object rules.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+</div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+<script>
+Reveal.initialize({
+  hash: true, slideNumber: 'c/t', transition: 'fade', transitionSpeed: 'fast',
+  controls: true, progress: true, center: false, width: 1100, height: 900, margin: 0.01,
+  plugins: [RevealHighlight], highlight: { theme: 'monokai' }
+});
+</script>
+<script>
+(function(){
+  var h = Reveal.getConfig().height || 900;
+  var m = Reveal.getConfig().margin || 0.02;
+  var maxH = Math.floor(h * (1 - 2 * m)) + 'px';
+  function fixSlides(){
+    document.querySelectorAll('.reveal .slides>section,.reveal .slides>section>section').forEach(function(s){
+      s.style.display = 'block'; s.style.maxHeight = maxH;
+    });
+  }
+  Reveal.on('ready', fixSlides);
+  Reveal.on('slidechanged', fixSlides);
+})();
+</script>
+</body>
+</html>
