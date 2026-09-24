@@ -10,8 +10,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
 <style>
-  :root { --amber:#f5a623; --green:#4ecb8d; --purple:#a78bfa; --blue:#60a5fa; --red:#f87171;
-          --bg:#0a0a0f; --bg2:#10101a; --bg3:#181824; --border:#2a2a3a; --text:#e8e8f0; --muted:#8888a8; }
+  :root { --amber:#cfad64; --green:#8fc9a1; --purple:#b2a3d0; --blue:#93b6cd; --red:#da7d6b;
+          --bg:#0f231c; --bg2:#132a22; --bg3:#173028; --border:#29483d; --text:#ede8d8; --muted:#829b90; }
   .reveal-viewport { background: var(--bg); }
   .reveal .slides section { background: transparent; }
   .reveal { font-family: 'DM Sans', sans-serif; color: var(--text); }
@@ -24,7 +24,7 @@
   .reveal code { font-family: 'JetBrains Mono', monospace; font-size: .72em; }
   .reveal pre  { box-shadow: none; background: var(--bg3); border: 1px solid var(--border);
                  border-radius: 6px; padding: .3em .5em; margin: .25em 0; }
-  .reveal pre code { font-size: .52em; line-height: 1.35; background: transparent; color: #cdd6f4; }
+  .reveal pre code { font-size: .52em; line-height: 1.35; background: transparent; color: #d9dcce; }
   .slide-hdr { display:flex; align-items:center; gap:.4em; border-bottom:1px solid var(--border);
                padding-bottom:.2em; margin-bottom:.3em; }
   .slide-hdr .tag { font-family:'JetBrains Mono',monospace; font-size:.42em; font-weight:500;
@@ -42,13 +42,13 @@
   .card.blue  { border-left:3px solid var(--blue); }
   .card.red   { border-left:3px solid var(--red); }
   .card h3 { font-size:.64em; margin:0 0 .12em; }
-  .card p  { font-size:.52em; margin:0; color:#b8b8d0; }
+  .card p  { font-size:.52em; margin:0; color:#b9c8bc; }
   .card ul { margin:0; padding-left:1em; }
-  .card li { font-size:.52em; color:#b8b8d0; margin-bottom:.02em; }
+  .card li { font-size:.52em; color:#b9c8bc; margin-bottom:.02em; }
   .reveal table { width:100%; border-collapse:collapse; font-size:.5em; }
   .reveal table th { background:var(--bg3); color:var(--amber); font-weight:600; padding:.2em .4em; border:1px solid var(--border); text-align:left; }
-  .reveal table td { padding:.18em .4em; border:1px solid var(--border); color:#ccc; }
-  .reveal table tr:nth-child(even) td { background:#0e0e18; }
+  .reveal table td { padding:.18em .4em; border:1px solid var(--border); color:#ccd5c7; }
+  .reveal table tr:nth-child(even) td { background:#122820; }
   .a{color:var(--amber);font-weight:600;} .g{color:var(--green);font-weight:600;}
   .p{color:var(--purple);font-weight:600;} .b{color:var(--blue);font-weight:600;}
   .r{color:var(--red);font-weight:600;} .mono{font-family:'JetBrains Mono',monospace;}
@@ -62,8 +62,8 @@
   .title-slide .meta{font-size:.48em; color:var(--muted); font-family:'JetBrains Mono',monospace;}
   .ss-row{display:flex; gap:.25em; align-items:center; margin:.1em 0; font-size:.55em; font-family:'JetBrains Mono',monospace;}
   .ss-node{padding:.2em .55em; border-radius:5px; font-size:.9em; background:var(--bg3); border:1px solid var(--border); color:var(--text);}
-  .ss-node.active{background:#1a2a1a; border-color:var(--green); color:var(--green);}
-  .ss-node.done{background:#1a1a2a; border-color:var(--purple); color:var(--purple);}
+  .ss-node.active{background:#2f3e35; border-color:var(--green); color:var(--green);}
+  .ss-node.done{background:#19342a; border-color:var(--purple); color:var(--purple);}
   .ss-arrow{color:var(--amber);}
   .reveal ul, .reveal ol { margin:.15em 0 .15em 1em; }
   .reveal .slides > section { display:flex !important; flex-direction:column !important; overflow-y:auto !important; align-items:stretch !important; justify-content:flex-start !important; }
@@ -75,7 +75,7 @@
 
 
 <!-- ═══ SLIDE 01 — TITLE ═══ -->
-<section class="title-slide" data-background-color="#0a0a0f">
+<section class="title-slide" data-background-color="#0f231c">
   <div style="text-align:left; max-width:820px; margin:0 auto; padding:1em 0;">
     <div style="font-family:'JetBrains Mono',monospace; font-size:.5em; color:var(--muted); margin-bottom:.4em; letter-spacing:.1em;">
       TECHNICAL PRESENTATION
@@ -98,7 +98,7 @@
       <span class="ss-arrow">→</span>
       <span class="ss-node done">propagate identity</span>
     </div>
-    <p style="max-width:660px; color:#a0a0c0; font-size:.56em; line-height:1.5; margin-top:1em;">
+    <p style="max-width:660px; color:#9fb3a8; font-size:.56em; line-height:1.5; margin-top:1em;">
       Where authorisation happens before the request reaches your service code — token validation, downscoping, rate-limit-as-policy, identity propagation. The complement to <em>Workload Identity &amp; Service-Mesh AuthZ</em> for north-south traffic.
     </p>
     <div class="meta" style="margin-top:1.4em;">
@@ -109,7 +109,7 @@
 
 
 <!-- ═══ SLIDE 02 — TOPICS ═══ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#0f231c">
   <div class="slide-hdr"><span class="tag">01</span><h2>Topics</h2></div>
   <div class="cols cols-2">
     <div>
@@ -159,35 +159,35 @@
 
 
 <!-- ═══ SLIDE 03 — WHERE THE EDGE SITS ═══ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#0f231c">
   <div class="slide-hdr"><span class="tag">02</span><h2>Where the Edge Sits — vs In-App AuthZ</h2></div>
   <p>Authorisation can be enforced at three places along a request: the <span class="a">edge</span> (before the request enters your network), the <span class="g">gateway / mesh</span> (between services), and <span class="p">in the application</span>. Most production systems do all three; each layer covers what the others can't.</p>
 
   <svg class="diagram" viewBox="0 0 940 250" width="900" height="250">
-    <rect x="20"  y="80" width="160" height="60" rx="6" fill="#1a1a2a" stroke="#60a5fa" stroke-width="1.5"/>
-    <text x="100" y="105" text-anchor="middle" fill="#60a5fa" font-family="Playfair Display,serif" font-size="13" font-weight="700">Internet client</text>
-    <text x="100" y="125" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">browser · mobile · agent · MCP host</text>
+    <rect x="20"  y="80" width="160" height="60" rx="6" fill="#19342a" stroke="#93b6cd" stroke-width="1.5"/>
+    <text x="100" y="105" text-anchor="middle" fill="#93b6cd" font-family="Playfair Display,serif" font-size="13" font-weight="700">Internet client</text>
+    <text x="100" y="125" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">browser · mobile · agent · MCP host</text>
 
-    <rect x="220" y="80" width="180" height="60" rx="6" fill="#1a1a2a" stroke="#f5a623" stroke-width="2"/>
-    <text x="310" y="105" text-anchor="middle" fill="#f5a623" font-family="Playfair Display,serif" font-size="13" font-weight="700">EDGE</text>
-    <text x="310" y="123" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">CDN · CF Access · API Gateway</text>
-    <text x="310" y="135" text-anchor="middle" fill="#888" font-family="JetBrains Mono,monospace" font-size="8">→ THIS DECK</text>
+    <rect x="220" y="80" width="180" height="60" rx="6" fill="#19342a" stroke="#cfad64" stroke-width="2"/>
+    <text x="310" y="105" text-anchor="middle" fill="#cfad64" font-family="Playfair Display,serif" font-size="13" font-weight="700">EDGE</text>
+    <text x="310" y="123" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">CDN · CF Access · API Gateway</text>
+    <text x="310" y="135" text-anchor="middle" fill="#7c968b" font-family="JetBrains Mono,monospace" font-size="8">→ THIS DECK</text>
 
-    <rect x="440" y="80" width="180" height="60" rx="6" fill="#1a1a2a" stroke="#a78bfa" stroke-width="1.5"/>
-    <text x="530" y="105" text-anchor="middle" fill="#a78bfa" font-family="Playfair Display,serif" font-size="13" font-weight="700">MESH / GATEWAY</text>
-    <text x="530" y="123" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">Envoy · Istio · Linkerd</text>
-    <text x="530" y="135" text-anchor="middle" fill="#888" font-family="JetBrains Mono,monospace" font-size="8">→ Workload AuthZ deck</text>
+    <rect x="440" y="80" width="180" height="60" rx="6" fill="#19342a" stroke="#b2a3d0" stroke-width="1.5"/>
+    <text x="530" y="105" text-anchor="middle" fill="#b2a3d0" font-family="Playfair Display,serif" font-size="13" font-weight="700">MESH / GATEWAY</text>
+    <text x="530" y="123" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">Envoy · Istio · Linkerd</text>
+    <text x="530" y="135" text-anchor="middle" fill="#7c968b" font-family="JetBrains Mono,monospace" font-size="8">→ Workload AuthZ deck</text>
 
-    <rect x="660" y="80" width="180" height="60" rx="6" fill="#1a1a2a" stroke="#4ecb8d" stroke-width="1.5"/>
-    <text x="750" y="105" text-anchor="middle" fill="#4ecb8d" font-family="Playfair Display,serif" font-size="13" font-weight="700">APP</text>
-    <text x="750" y="123" text-anchor="middle" fill="#ccc" font-family="JetBrains Mono,monospace" font-size="9">in-process PEP, OPA, Cedar</text>
-    <text x="750" y="135" text-anchor="middle" fill="#888" font-family="JetBrains Mono,monospace" font-size="8">→ Authorization Models deck</text>
+    <rect x="660" y="80" width="180" height="60" rx="6" fill="#19342a" stroke="#8fc9a1" stroke-width="1.5"/>
+    <text x="750" y="105" text-anchor="middle" fill="#8fc9a1" font-family="Playfair Display,serif" font-size="13" font-weight="700">APP</text>
+    <text x="750" y="123" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">in-process PEP, OPA, Cedar</text>
+    <text x="750" y="135" text-anchor="middle" fill="#7c968b" font-family="JetBrains Mono,monospace" font-size="8">→ Authorization Models deck</text>
 
-    <line x1="180" y1="110" x2="220" y2="110" stroke="#888" stroke-width="1.2"/>
-    <line x1="400" y1="110" x2="440" y2="110" stroke="#888" stroke-width="1.2"/>
-    <line x1="620" y1="110" x2="660" y2="110" stroke="#888" stroke-width="1.2"/>
+    <line x1="180" y1="110" x2="220" y2="110" stroke="#7c968b" stroke-width="1.2"/>
+    <line x1="400" y1="110" x2="440" y2="110" stroke="#7c968b" stroke-width="1.2"/>
+    <line x1="620" y1="110" x2="660" y2="110" stroke="#7c968b" stroke-width="1.2"/>
 
-    <text x="465" y="195" text-anchor="middle" fill="#888" font-family="DM Sans,sans-serif" font-size="11">Each layer is best at different rules. Don't try to push everything to the edge — and don't leave the edge bare.</text>
+    <text x="465" y="195" text-anchor="middle" fill="#7c968b" font-family="DM Sans,sans-serif" font-size="11">Each layer is best at different rules. Don't try to push everything to the edge — and don't leave the edge bare.</text>
   </svg>
 
   <div class="cols cols-3" style="margin-top:0.2em;">
@@ -199,7 +199,7 @@
 
 
 <!-- ═══ SLIDE 04 — JWT VS INTROSPECTION ═══ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#0f231c">
   <div class="slide-hdr"><span class="tag">03</span><h2>Token Validation at the Edge — JWT vs Introspection</h2></div>
 
   <div class="cols cols-2">
@@ -249,44 +249,44 @@
 
 
 <!-- ═══ SLIDE 05 — EXT_AUTHZ ═══ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#0f231c">
   <div class="slide-hdr"><span class="tag">04</span><h2>The Envoy <code>ext_authz</code> Pattern</h2></div>
   <p>Envoy is the data-plane underneath most modern edges and meshes (Istio, Cilium service-mesh mode, Cloud-native API gateways, AWS App Mesh). Its <code>ext_authz</code> filter is the canonical way to delegate authz to a separate service.</p>
 
   <svg class="diagram" viewBox="0 0 940 240" width="900" height="240">
-    <rect x="20"  y="40" width="140" height="40" rx="5" fill="#1a1a2a" stroke="#60a5fa" stroke-width="1.5"/>
-    <text x="90" y="65" text-anchor="middle" fill="#60a5fa" font-family="Playfair Display,serif" font-size="13" font-weight="700">Client</text>
+    <rect x="20"  y="40" width="140" height="40" rx="5" fill="#19342a" stroke="#93b6cd" stroke-width="1.5"/>
+    <text x="90" y="65" text-anchor="middle" fill="#93b6cd" font-family="Playfair Display,serif" font-size="13" font-weight="700">Client</text>
 
-    <rect x="280" y="40" width="180" height="40" rx="5" fill="#1a1a2a" stroke="#f5a623" stroke-width="2"/>
-    <text x="370" y="65" text-anchor="middle" fill="#f5a623" font-family="Playfair Display,serif" font-size="13" font-weight="700">Envoy</text>
+    <rect x="280" y="40" width="180" height="40" rx="5" fill="#19342a" stroke="#cfad64" stroke-width="2"/>
+    <text x="370" y="65" text-anchor="middle" fill="#cfad64" font-family="Playfair Display,serif" font-size="13" font-weight="700">Envoy</text>
 
-    <rect x="280" y="130" width="180" height="40" rx="5" fill="#1a1a2a" stroke="#a78bfa" stroke-width="1.5"/>
-    <text x="370" y="155" text-anchor="middle" fill="#a78bfa" font-family="Playfair Display,serif" font-size="13" font-weight="700">ext_authz service</text>
-    <text x="370" y="170" text-anchor="middle" fill="#888" font-family="JetBrains Mono,monospace" font-size="9">OPA / custom / Cedar</text>
+    <rect x="280" y="130" width="180" height="40" rx="5" fill="#19342a" stroke="#b2a3d0" stroke-width="1.5"/>
+    <text x="370" y="155" text-anchor="middle" fill="#b2a3d0" font-family="Playfair Display,serif" font-size="13" font-weight="700">ext_authz service</text>
+    <text x="370" y="170" text-anchor="middle" fill="#7c968b" font-family="JetBrains Mono,monospace" font-size="9">OPA / custom / Cedar</text>
 
-    <rect x="600" y="40" width="180" height="40" rx="5" fill="#1a1a2a" stroke="#4ecb8d" stroke-width="1.5"/>
-    <text x="690" y="65" text-anchor="middle" fill="#4ecb8d" font-family="Playfair Display,serif" font-size="13" font-weight="700">Upstream service</text>
+    <rect x="600" y="40" width="180" height="40" rx="5" fill="#19342a" stroke="#8fc9a1" stroke-width="1.5"/>
+    <text x="690" y="65" text-anchor="middle" fill="#8fc9a1" font-family="Playfair Display,serif" font-size="13" font-weight="700">Upstream service</text>
 
-    <line x1="160" y1="60" x2="280" y2="60" stroke="#60a5fa" stroke-width="1.2" marker-end="url(#eg-b)"/>
-    <text x="220" y="55" text-anchor="middle" fill="#60a5fa" font-family="JetBrains Mono,monospace" font-size="9">1. request</text>
+    <line x1="160" y1="60" x2="280" y2="60" stroke="#93b6cd" stroke-width="1.2" marker-end="url(#eg-b)"/>
+    <text x="220" y="55" text-anchor="middle" fill="#93b6cd" font-family="JetBrains Mono,monospace" font-size="9">1. request</text>
 
-    <line x1="370" y1="80" x2="370" y2="130" stroke="#f5a623" stroke-width="1.4" marker-end="url(#eg-a)"/>
-    <text x="380" y="105" fill="#f5a623" font-family="JetBrains Mono,monospace" font-size="9">2. CheckRequest (gRPC)</text>
+    <line x1="370" y1="80" x2="370" y2="130" stroke="#cfad64" stroke-width="1.4" marker-end="url(#eg-a)"/>
+    <text x="380" y="105" fill="#cfad64" font-family="JetBrains Mono,monospace" font-size="9">2. CheckRequest (gRPC)</text>
 
-    <line x1="370" y1="170" x2="370" y2="210" stroke="#a78bfa" stroke-width="1.4"/>
-    <text x="380" y="195" fill="#a78bfa" font-family="JetBrains Mono,monospace" font-size="9">decision</text>
-    <line x1="370" y1="200" x2="370" y2="80" stroke="#a78bfa" stroke-width="1.4" marker-end="url(#eg-p)"/>
+    <line x1="370" y1="170" x2="370" y2="210" stroke="#b2a3d0" stroke-width="1.4"/>
+    <text x="380" y="195" fill="#b2a3d0" font-family="JetBrains Mono,monospace" font-size="9">decision</text>
+    <line x1="370" y1="200" x2="370" y2="80" stroke="#b2a3d0" stroke-width="1.4" marker-end="url(#eg-p)"/>
 
-    <line x1="460" y1="60" x2="600" y2="60" stroke="#4ecb8d" stroke-width="1.2" marker-end="url(#eg-g)"/>
-    <text x="530" y="55" text-anchor="middle" fill="#4ecb8d" font-family="JetBrains Mono,monospace" font-size="9">3. allow + headers</text>
+    <line x1="460" y1="60" x2="600" y2="60" stroke="#8fc9a1" stroke-width="1.2" marker-end="url(#eg-g)"/>
+    <text x="530" y="55" text-anchor="middle" fill="#8fc9a1" font-family="JetBrains Mono,monospace" font-size="9">3. allow + headers</text>
 
-    <text x="465" y="225" text-anchor="middle" fill="#888" font-family="DM Sans,sans-serif" font-size="11">ext_authz can also <em>add headers</em> to the request — propagate <code>X-User-Sub</code>, <code>X-Tenant-ID</code>, downscoped tokens.</text>
+    <text x="465" y="225" text-anchor="middle" fill="#7c968b" font-family="DM Sans,sans-serif" font-size="11">ext_authz can also <em>add headers</em> to the request — propagate <code>X-User-Sub</code>, <code>X-Tenant-ID</code>, downscoped tokens.</text>
 
     <defs>
-      <marker id="eg-b" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#60a5fa"/></marker>
-      <marker id="eg-a" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#f5a623"/></marker>
-      <marker id="eg-p" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#a78bfa"/></marker>
-      <marker id="eg-g" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#4ecb8d"/></marker>
+      <marker id="eg-b" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#93b6cd"/></marker>
+      <marker id="eg-a" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#cfad64"/></marker>
+      <marker id="eg-p" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#b2a3d0"/></marker>
+      <marker id="eg-g" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#8fc9a1"/></marker>
     </defs>
   </svg>
 
@@ -328,7 +328,7 @@
 
 
 <!-- ═══ SLIDE 06 — AWS API GATEWAY ═══ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#0f231c">
   <div class="slide-hdr"><span class="tag">05</span><h2>AWS API Gateway Authorizers</h2></div>
 
   <div class="cols cols-2">
@@ -388,7 +388,7 @@
 
 
 <!-- ═══ SLIDE 07 — CLOUDFLARE / WORKERS ═══ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#0f231c">
   <div class="slide-hdr"><span class="tag">06</span><h2>Cloudflare Access &amp; Workers</h2></div>
 
   <div class="cols cols-2">
@@ -447,7 +447,7 @@ req.user = { sub: claims.sub, email: claims.email };</code></pre>
 
 
 <!-- ═══ SLIDE 08 — KONG / APIGEE / TYK ═══ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#0f231c">
   <div class="slide-hdr"><span class="tag">07</span><h2>Kong &middot; Apigee &middot; Tyk &middot; Krakend</h2></div>
 
   <table>
@@ -521,7 +521,7 @@ req.user = { sub: claims.sub, email: claims.email };</code></pre>
 
 
 <!-- ═══ SLIDE 09 — RATE LIMIT AS AUTHZ ═══ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#0f231c">
   <div class="slide-hdr"><span class="tag">08</span><h2>Rate-Limit-as-Authorisation</h2></div>
   <p>Most rate-limit configurations are de-facto authorisation policies — "<em>this caller may do <strong>at most</strong> this many requests per minute, per hour, per day</em>". Treating them as such (and enforcing at the edge) is one of the highest-leverage pieces of authz you can ship.</p>
 
@@ -580,7 +580,7 @@ req.user = { sub: claims.sub, email: claims.email };</code></pre>
 
 
 <!-- ═══ SLIDE 10 — MTLS TERMINATION ═══ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#0f231c">
   <div class="slide-hdr"><span class="tag">09</span><h2>mTLS Termination &amp; Identity Propagation</h2></div>
 
   <div class="cols cols-2">
@@ -634,7 +634,7 @@ http_connection_manager:
 
 
 <!-- ═══ SLIDE 11 — JWT DOWNSCOPING ═══ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#0f231c">
   <div class="slide-hdr"><span class="tag">10</span><h2>JWT Downscoping &amp; Token Exchange at the Edge</h2></div>
 
   <div class="cols cols-2">
@@ -681,7 +681,7 @@ scope=billing:read</code></pre>
 
 
 <!-- ═══ SLIDE 12 — WAF VS AUTHZ ═══ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#0f231c">
   <div class="slide-hdr"><span class="tag">11</span><h2>WAF vs AuthZ — Knowing the Boundary</h2></div>
 
   <div class="cols cols-2">
@@ -723,7 +723,7 @@ scope=billing:read</code></pre>
 
 
 <!-- ═══ SLIDE 13 — GRAPHQL ═══ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#0f231c">
   <div class="slide-hdr"><span class="tag">12</span><h2>GraphQL Gateway Patterns</h2></div>
   <p>GraphQL collapses many REST endpoints into a single POST. Edge authorisation needs different patterns to keep up.</p>
 
@@ -768,7 +768,7 @@ scope=billing:read</code></pre>
 
 
 <!-- ═══ SLIDE 14 — WEBHOOKS ═══ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#0f231c">
   <div class="slide-hdr"><span class="tag">13</span><h2>Webhook Authorisation — Signed Payloads &amp; Replay</h2></div>
   <p>Webhooks are the inverse pattern: an external service POSTs to <em>your</em> endpoint. There is no user-agent and no OAuth flow; you must authenticate the sender from the request itself.</p>
 
@@ -825,7 +825,7 @@ process(req.body);</code></pre>
 
 
 <!-- ═══ SLIDE 15 — MCP GATEWAY ═══ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#0f231c">
   <div class="slide-hdr"><span class="tag">14</span><h2>MCP Gateway Revisited — The AI-Era Edge AuthZ</h2></div>
 
   <div class="cols cols-2">
@@ -868,7 +868,7 @@ process(req.body);</code></pre>
 
 
 <!-- ═══ SLIDE 16 — MULTI-TENANT EDGE ═══ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#0f231c">
   <div class="slide-hdr"><span class="tag">15</span><h2>Multi-Tenant Edge — Routing &amp; Header Injection</h2></div>
 
   <div class="cols cols-2">
@@ -920,7 +920,7 @@ x-request-id:   {edge-generated UUID}</code></pre>
 
 
 <!-- ═══ SLIDE 17 — OBSERVABILITY ═══ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#0f231c">
   <div class="slide-hdr"><span class="tag">16</span><h2>Observability — Latency, Deny Rates, Attack Signatures</h2></div>
 
   <div class="cols cols-2">
@@ -968,7 +968,7 @@ x-request-id:   {edge-generated UUID}</code></pre>
 
 
 <!-- ═══ SLIDE 18 — ANTI-PATTERNS ═══ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#0f231c">
   <div class="slide-hdr"><span class="tag">17</span><h2>Anti-Patterns</h2></div>
 
   <div class="cols cols-2">
@@ -1013,7 +1013,7 @@ x-request-id:   {edge-generated UUID}</code></pre>
 
 
 <!-- ═══ SLIDE 19 — CHOOSING ═══ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#0f231c">
   <div class="slide-hdr"><span class="tag">18</span><h2>Choosing a Stack</h2></div>
 
   <table>
@@ -1065,7 +1065,7 @@ x-request-id:   {edge-generated UUID}</code></pre>
 
 
 <!-- ═══ SLIDE 20 — SUMMARY ═══ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#0f231c">
   <div class="slide-hdr"><span class="tag">19</span><h2>Summary &amp; References</h2></div>
 
   <div class="cols cols-2">
