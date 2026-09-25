@@ -6,7 +6,7 @@
 <title>Edge &amp; Gateway AuthZ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus:wght@400&family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,700&family=Spline+Sans+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400;1,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
 <style>
@@ -14,20 +14,20 @@
           --bg:#0f231c; --bg2:#132a22; --bg3:#173028; --border:#29483d; --text:#ede8d8; --muted:#829b90; }
   .reveal-viewport { background: var(--bg); }
   .reveal .slides section { background: transparent; }
-  .reveal { font-family: 'DM Sans', sans-serif; color: var(--text); }
-  .reveal h1, .reveal h2, .reveal h3 { font-family: 'Playfair Display', serif; font-weight: 700; }
+  .reveal { font-family: 'Hanken Grotesk', sans-serif; color: var(--text); }
+  .reveal h1, .reveal h2, .reveal h3 { font-family: 'Marcellus', serif; font-weight: 700; }
   .reveal h1 { font-size: 1.6em; color: var(--amber); line-height: 1.1; }
   .reveal h2 { font-size: 1.1em; color: var(--amber); margin-bottom: .2em; }
   .reveal h3 { font-size: .78em; color: var(--green); margin-bottom: .15em; }
   .reveal p  { font-size: .56em; line-height: 1.45; color: var(--text); }
   .reveal li { font-size: .54em; line-height: 1.45; margin-bottom: .1em; }
-  .reveal code { font-family: 'JetBrains Mono', monospace; font-size: .72em; }
+  .reveal code { font-family: 'Spline Sans Mono', monospace; font-size: .72em; }
   .reveal pre  { box-shadow: none; background: var(--bg3); border: 1px solid var(--border);
                  border-radius: 6px; padding: .3em .5em; margin: .25em 0; }
   .reveal pre code { font-size: .52em; line-height: 1.35; background: transparent; color: #d9dcce; }
   .slide-hdr { display:flex; align-items:center; gap:.4em; border-bottom:1px solid var(--border);
                padding-bottom:.2em; margin-bottom:.3em; }
-  .slide-hdr .tag { font-family:'JetBrains Mono',monospace; font-size:.42em; font-weight:500;
+  .slide-hdr .tag { font-family:'Spline Sans Mono',monospace; font-size:.42em; font-weight:500;
                     color:var(--bg); background:var(--amber); padding:.1em .4em; border-radius:3px; letter-spacing:.04em; }
   .slide-hdr h2 { margin:0; font-size:.95em; }
   .cols { display:grid; gap:.5em; }
@@ -51,16 +51,16 @@
   .reveal table tr:nth-child(even) td { background:#122820; }
   .a{color:var(--amber);font-weight:600;} .g{color:var(--green);font-weight:600;}
   .p{color:var(--purple);font-weight:600;} .b{color:var(--blue);font-weight:600;}
-  .r{color:var(--red);font-weight:600;} .mono{font-family:'JetBrains Mono',monospace;}
+  .r{color:var(--red);font-weight:600;} .mono{font-family:'Spline Sans Mono',monospace;}
   svg.diagram { display:block; margin:0 auto; overflow:visible; }
-  .pill { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:.44em; padding:.08em .4em; border-radius:99px; border:1px solid; margin:0 .08em; }
+  .pill { display:inline-block; font-family:'Spline Sans Mono',monospace; font-size:.44em; padding:.08em .4em; border-radius:99px; border:1px solid; margin:0 .08em; }
   .pill.amber{color:var(--amber); border-color:var(--amber);} .pill.green{color:var(--green); border-color:var(--green);}
   .pill.purple{color:var(--purple); border-color:var(--purple);} .pill.blue{color:var(--blue); border-color:var(--blue);}
   .reveal .slide-footer{display:none;}
   .title-slide h1{font-size:1.8em;}
-  .title-slide .subtitle{font-size:.7em; color:var(--green); font-family:'DM Sans',sans-serif; font-weight:300; letter-spacing:.04em; margin:.3em 0 .6em;}
-  .title-slide .meta{font-size:.48em; color:var(--muted); font-family:'JetBrains Mono',monospace;}
-  .ss-row{display:flex; gap:.25em; align-items:center; margin:.1em 0; font-size:.55em; font-family:'JetBrains Mono',monospace;}
+  .title-slide .subtitle{font-size:.7em; color:var(--green); font-family:'Hanken Grotesk',sans-serif; font-weight:300; letter-spacing:.04em; margin:.3em 0 .6em;}
+  .title-slide .meta{font-size:.48em; color:var(--muted); font-family:'Spline Sans Mono',monospace;}
+  .ss-row{display:flex; gap:.25em; align-items:center; margin:.1em 0; font-size:.55em; font-family:'Spline Sans Mono',monospace;}
   .ss-node{padding:.2em .55em; border-radius:5px; font-size:.9em; background:var(--bg3); border:1px solid var(--border); color:var(--text);}
   .ss-node.active{background:#2f3e35; border-color:var(--green); color:var(--green);}
   .ss-node.done{background:#19342a; border-color:var(--purple); color:var(--purple);}
@@ -68,6 +68,7 @@
   .reveal ul, .reveal ol { margin:.15em 0 .15em 1em; }
   .reveal .slides > section { display:flex !important; flex-direction:column !important; overflow-y:auto !important; align-items:stretch !important; justify-content:flex-start !important; }
 </style>
+<style>:root{font-synthesis-weight:none}</style>
 </head>
 <body>
 <div class="reveal">
@@ -77,7 +78,7 @@
 <!-- ═══ SLIDE 01 — TITLE ═══ -->
 <section class="title-slide" data-background-color="#0f231c">
   <div style="text-align:left; max-width:820px; margin:0 auto; padding:1em 0;">
-    <div style="font-family:'JetBrains Mono',monospace; font-size:.5em; color:var(--muted); margin-bottom:.4em; letter-spacing:.1em;">
+    <div style="font-family:'Spline Sans Mono',monospace; font-size:.5em; color:var(--muted); margin-bottom:.4em; letter-spacing:.1em;">
       TECHNICAL PRESENTATION
     </div>
     <h1>Edge &amp;<br>Gateway AuthZ</h1>
@@ -165,29 +166,29 @@
 
   <svg class="diagram" viewBox="0 0 940 250" width="900" height="250">
     <rect x="20"  y="80" width="160" height="60" rx="6" fill="#19342a" stroke="#93b6cd" stroke-width="1.5"/>
-    <text x="100" y="105" text-anchor="middle" fill="#93b6cd" font-family="Playfair Display,serif" font-size="13" font-weight="700">Internet client</text>
-    <text x="100" y="125" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">browser · mobile · agent · MCP host</text>
+    <text x="100" y="105" text-anchor="middle" fill="#93b6cd" font-family="Marcellus,serif" font-size="13" font-weight="700">Internet client</text>
+    <text x="100" y="125" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">browser · mobile · agent · MCP host</text>
 
     <rect x="220" y="80" width="180" height="60" rx="6" fill="#19342a" stroke="#cfad64" stroke-width="2"/>
-    <text x="310" y="105" text-anchor="middle" fill="#cfad64" font-family="Playfair Display,serif" font-size="13" font-weight="700">EDGE</text>
-    <text x="310" y="123" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">CDN · CF Access · API Gateway</text>
-    <text x="310" y="135" text-anchor="middle" fill="#7c968b" font-family="JetBrains Mono,monospace" font-size="8">→ THIS DECK</text>
+    <text x="310" y="105" text-anchor="middle" fill="#cfad64" font-family="Marcellus,serif" font-size="13" font-weight="700">EDGE</text>
+    <text x="310" y="123" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">CDN · CF Access · API Gateway</text>
+    <text x="310" y="135" text-anchor="middle" fill="#7c968b" font-family="Spline Sans Mono,monospace" font-size="8">→ THIS DECK</text>
 
     <rect x="440" y="80" width="180" height="60" rx="6" fill="#19342a" stroke="#b2a3d0" stroke-width="1.5"/>
-    <text x="530" y="105" text-anchor="middle" fill="#b2a3d0" font-family="Playfair Display,serif" font-size="13" font-weight="700">MESH / GATEWAY</text>
-    <text x="530" y="123" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">Envoy · Istio · Linkerd</text>
-    <text x="530" y="135" text-anchor="middle" fill="#7c968b" font-family="JetBrains Mono,monospace" font-size="8">→ Workload AuthZ deck</text>
+    <text x="530" y="105" text-anchor="middle" fill="#b2a3d0" font-family="Marcellus,serif" font-size="13" font-weight="700">MESH / GATEWAY</text>
+    <text x="530" y="123" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">Envoy · Istio · Linkerd</text>
+    <text x="530" y="135" text-anchor="middle" fill="#7c968b" font-family="Spline Sans Mono,monospace" font-size="8">→ Workload AuthZ deck</text>
 
     <rect x="660" y="80" width="180" height="60" rx="6" fill="#19342a" stroke="#8fc9a1" stroke-width="1.5"/>
-    <text x="750" y="105" text-anchor="middle" fill="#8fc9a1" font-family="Playfair Display,serif" font-size="13" font-weight="700">APP</text>
-    <text x="750" y="123" text-anchor="middle" fill="#ccd5c7" font-family="JetBrains Mono,monospace" font-size="9">in-process PEP, OPA, Cedar</text>
-    <text x="750" y="135" text-anchor="middle" fill="#7c968b" font-family="JetBrains Mono,monospace" font-size="8">→ Authorization Models deck</text>
+    <text x="750" y="105" text-anchor="middle" fill="#8fc9a1" font-family="Marcellus,serif" font-size="13" font-weight="700">APP</text>
+    <text x="750" y="123" text-anchor="middle" fill="#ccd5c7" font-family="Spline Sans Mono,monospace" font-size="9">in-process PEP, OPA, Cedar</text>
+    <text x="750" y="135" text-anchor="middle" fill="#7c968b" font-family="Spline Sans Mono,monospace" font-size="8">→ Authorization Models deck</text>
 
     <line x1="180" y1="110" x2="220" y2="110" stroke="#7c968b" stroke-width="1.2"/>
     <line x1="400" y1="110" x2="440" y2="110" stroke="#7c968b" stroke-width="1.2"/>
     <line x1="620" y1="110" x2="660" y2="110" stroke="#7c968b" stroke-width="1.2"/>
 
-    <text x="465" y="195" text-anchor="middle" fill="#7c968b" font-family="DM Sans,sans-serif" font-size="11">Each layer is best at different rules. Don't try to push everything to the edge — and don't leave the edge bare.</text>
+    <text x="465" y="195" text-anchor="middle" fill="#7c968b" font-family="Hanken Grotesk,sans-serif" font-size="11">Each layer is best at different rules. Don't try to push everything to the edge — and don't leave the edge bare.</text>
   </svg>
 
   <div class="cols cols-3" style="margin-top:0.2em;">
@@ -255,32 +256,32 @@
 
   <svg class="diagram" viewBox="0 0 940 240" width="900" height="240">
     <rect x="20"  y="40" width="140" height="40" rx="5" fill="#19342a" stroke="#93b6cd" stroke-width="1.5"/>
-    <text x="90" y="65" text-anchor="middle" fill="#93b6cd" font-family="Playfair Display,serif" font-size="13" font-weight="700">Client</text>
+    <text x="90" y="65" text-anchor="middle" fill="#93b6cd" font-family="Marcellus,serif" font-size="13" font-weight="700">Client</text>
 
     <rect x="280" y="40" width="180" height="40" rx="5" fill="#19342a" stroke="#cfad64" stroke-width="2"/>
-    <text x="370" y="65" text-anchor="middle" fill="#cfad64" font-family="Playfair Display,serif" font-size="13" font-weight="700">Envoy</text>
+    <text x="370" y="65" text-anchor="middle" fill="#cfad64" font-family="Marcellus,serif" font-size="13" font-weight="700">Envoy</text>
 
     <rect x="280" y="130" width="180" height="40" rx="5" fill="#19342a" stroke="#b2a3d0" stroke-width="1.5"/>
-    <text x="370" y="155" text-anchor="middle" fill="#b2a3d0" font-family="Playfair Display,serif" font-size="13" font-weight="700">ext_authz service</text>
-    <text x="370" y="170" text-anchor="middle" fill="#7c968b" font-family="JetBrains Mono,monospace" font-size="9">OPA / custom / Cedar</text>
+    <text x="370" y="155" text-anchor="middle" fill="#b2a3d0" font-family="Marcellus,serif" font-size="13" font-weight="700">ext_authz service</text>
+    <text x="370" y="170" text-anchor="middle" fill="#7c968b" font-family="Spline Sans Mono,monospace" font-size="9">OPA / custom / Cedar</text>
 
     <rect x="600" y="40" width="180" height="40" rx="5" fill="#19342a" stroke="#8fc9a1" stroke-width="1.5"/>
-    <text x="690" y="65" text-anchor="middle" fill="#8fc9a1" font-family="Playfair Display,serif" font-size="13" font-weight="700">Upstream service</text>
+    <text x="690" y="65" text-anchor="middle" fill="#8fc9a1" font-family="Marcellus,serif" font-size="13" font-weight="700">Upstream service</text>
 
     <line x1="160" y1="60" x2="280" y2="60" stroke="#93b6cd" stroke-width="1.2" marker-end="url(#eg-b)"/>
-    <text x="220" y="55" text-anchor="middle" fill="#93b6cd" font-family="JetBrains Mono,monospace" font-size="9">1. request</text>
+    <text x="220" y="55" text-anchor="middle" fill="#93b6cd" font-family="Spline Sans Mono,monospace" font-size="9">1. request</text>
 
     <line x1="370" y1="80" x2="370" y2="130" stroke="#cfad64" stroke-width="1.4" marker-end="url(#eg-a)"/>
-    <text x="380" y="105" fill="#cfad64" font-family="JetBrains Mono,monospace" font-size="9">2. CheckRequest (gRPC)</text>
+    <text x="380" y="105" fill="#cfad64" font-family="Spline Sans Mono,monospace" font-size="9">2. CheckRequest (gRPC)</text>
 
     <line x1="370" y1="170" x2="370" y2="210" stroke="#b2a3d0" stroke-width="1.4"/>
-    <text x="380" y="195" fill="#b2a3d0" font-family="JetBrains Mono,monospace" font-size="9">decision</text>
+    <text x="380" y="195" fill="#b2a3d0" font-family="Spline Sans Mono,monospace" font-size="9">decision</text>
     <line x1="370" y1="200" x2="370" y2="80" stroke="#b2a3d0" stroke-width="1.4" marker-end="url(#eg-p)"/>
 
     <line x1="460" y1="60" x2="600" y2="60" stroke="#8fc9a1" stroke-width="1.2" marker-end="url(#eg-g)"/>
-    <text x="530" y="55" text-anchor="middle" fill="#8fc9a1" font-family="JetBrains Mono,monospace" font-size="9">3. allow + headers</text>
+    <text x="530" y="55" text-anchor="middle" fill="#8fc9a1" font-family="Spline Sans Mono,monospace" font-size="9">3. allow + headers</text>
 
-    <text x="465" y="225" text-anchor="middle" fill="#7c968b" font-family="DM Sans,sans-serif" font-size="11">ext_authz can also <em>add headers</em> to the request — propagate <code>X-User-Sub</code>, <code>X-Tenant-ID</code>, downscoped tokens.</text>
+    <text x="465" y="225" text-anchor="middle" fill="#7c968b" font-family="Hanken Grotesk,sans-serif" font-size="11">ext_authz can also <em>add headers</em> to the request — propagate <code>X-User-Sub</code>, <code>X-Tenant-ID</code>, downscoped tokens.</text>
 
     <defs>
       <marker id="eg-b" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#93b6cd"/></marker>
